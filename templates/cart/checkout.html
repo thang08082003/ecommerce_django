@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<head>
+    <style>
+        .navbar {
+            background-color: #333; 
+            padding: 10px 20px; 
+        }
+
+        .navbar ul {
+            list-style-type: none; 
+            display: flex; 
+            justify-content: space-between;
+            margin: 0; 
+            padding: 0; 
+        }
+
+        .navbar li {
+            margin: 0 10px;
+        }
+
+        .navbar a {
+            color: #fff; 
+            text-decoration: none;
+            padding: 8px 12px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #555; 
+            border-radius: 5px; 
+        }
+    </style>
+</head>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="{% url 'book:book_list' %}">Books</a></li>
+        <li><a href="{% url 'shoes:shoes_list' %}">Shoes</a></li>
+        <li><a href="{% url 'clothes:clothes_list' %}">Clothes</a></li>
+        <li><a href="{% url 'mobiles:mobiles_list' %}">Mobiles</a></li>
+        <li><a href="{% url 'cart:view_cart' %}">Cart</a></li>
+        <li><a href="{% url 'customer:profile' %}">Profile</a></li>
+        <li><a href="{% url 'customer:logout' %}">Logout</a></li>
+       
+    
+    </ul>
+</nav>
+<div class="checkout-container">
+    <h1>Checkout</h1>
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-section">
+            <h2>Shipping Information</h2>
+            <div class="form-group">
+                <label for="shipping_method">Shipping Method:</label>
+                <select name="shipping_method" id="shipping_method" required>
+                    <option value="">Select shipping method</option>
+                    <option value="standard">Standard Shipping (3-5 days)</option>
+                    <option value="express">Express Shipping (1-2 days)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Delivery Address:</label>
+                <textarea name="address" id="address" rows="4" required></textarea>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Payment Method</h2>
+            <div class="form-group">
+                <select name="payment_method" id="payment_method" required>
+                    <option value="">Select payment method</option>
+                    <option value="cod">Cash on Delivery</option>
+                    <option value="bank">Bank Transfer</option>
+                    <option value="credit">Credit Card</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            {% if cart %}
+                {% for item in cart.items.all %}
+                    <div class="order-item">
+                        <p>{{ item.book.title }} - Quantity: {{ item.quantity }} - ${{ item.get_cost }}</p>
+                    </div>
+                {% endfor %}
+                <h3>Total: ${{ cart.get_total }}</h3>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="confirm-button">Confirm Order</button>
+    </form>
+</div>
+
+<style>
+    .checkout-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .form-section {
+        margin-bottom: 30px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    select, textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    .order-summary {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+    .confirm-button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .confirm-button:hover {
+        background-color: #45a049;
+    }
+</style>
+{% endblock %}

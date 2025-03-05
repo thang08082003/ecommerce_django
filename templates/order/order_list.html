@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}My Orders{% endblock %}
+
+{% block content %}
+<head>
+    <style>
+        .order-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .order-item {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .order-item:hover {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .order-item h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .order-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .view-details {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 3px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .view-details:hover {
+            background-color: #45a049;
+        }
+
+        .no-orders {
+            text-align: center;
+            padding: 30px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            color: #666;
+        }
+
+        .navbar {
+            background-color: #333;
+            padding: 10px 20px;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            display: flex;
+            justify-content: space-between;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar li {
+            margin: 0 10px;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 12px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #555;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="{% url 'book:book_list' %}">Book</a></li>
+        <li><a href="{% url 'shoes:shoes_list' %}">Shoes</a></li>
+        <li><a href="{% url 'customer:profile' %}">Profile</a></li>
+        <li><a href="{% url 'cart:view_cart' %}">Cart</a></li>
+        <li><a href="{% url 'customer:logout' %}">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="order-container">
+    <h1>My Orders</h1>
+    {% if orders %}
+        {% for order in orders %}
+            <div class="order-item">
+                <h3>Order #{{ order.id }}</h3>
+                <p><strong>Date:</strong> {{ order.order_date|date:"F j, Y, g:i a" }}</p>
+                <p><strong>Status:</strong> {{ order.get_status_display }}</p>
+                <p><strong>Shipping Method:</strong> {{ order.get_shipping_method_display }}</p>
+                <p><strong>Total:</strong> ${{ order.total_amount }}</p>
+                <a href="{% url 'order:order_detail' order.id %}" class="view-details">View Details</a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-orders">
+            <p>No orders found.</p>
+            <a href="{% url 'book:book_list' %}" class="view-details">Start Shopping</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

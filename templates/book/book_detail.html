@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/book_detail.css' %}">
+
+<nav class="navbar">
+    <ul>
+        <li><a href="{% url 'book:book_list' %}">Books</a></li>
+        <li><a href="{% url 'shoes:shoes_list' %}">Shoes</a></li>
+        <li><a href="{% url 'clothes:clothes_list' %}">Clothes</a></li>
+        <li><a href="{% url 'mobiles:mobiles_list' %}">Mobiles</a></li>
+        <li><a href="{% url 'cart:view_cart' %}">Cart</a></li>
+        <li><a href="{% url 'customer:profile' %}">Profile</a></li>
+        <li><a href="{% url 'customer:logout' %}">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="book-detail">
+    <div class="book-image">
+        {% if book.cover_image %}
+            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+        {% endif %}
+    </div>
+    <div class="book-info">
+        <h1>{{ book.title }}</h1>
+        <p class="author">By {{ book.author }}</p>
+        <p class="price">
+            ${{ book.price }}
+            {% if book.discount %}
+                <span class="discount">{{ book.discount }}% off</span>
+            {% endif %}
+        </p>
+        <div class="description">
+            <h3>Description</h3>
+            {{ book.description|linebreaks }}
+        </div>
+        
+        {% if book.stock > 0 %}
+            <p class="stock">In Stock: {{ book.stock }}</p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'cart:add_to_cart' 'book' book.id %}" class="button">Add to Cart</a>
+            {% else %}
+                <a href="{% url 'customer:login' %}" class="button">Login to Purchase</a>
+            {% endif %}
+        {% else %}
+            <p class="out-of-stock">Out of Stock</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .navbar {
+        background-color: #333;
+        padding: 10px 20px;
+    }
+
+    .navbar ul {
+        list-style-type: none;
+        display: flex;
+        justify-content: space-between;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar li {
+        margin: 0 10px;
+    }
+
+    .navbar a {
+        color: #fff;
+        text-decoration: none;
+        padding: 8px 12px;
+        transition: background-color 0.3s;
+    }
+
+    .navbar a:hover {
+        background-color: #555;
+        border-radius: 5px;
+    }
+
+    .book-detail {
+        display: flex;
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .book-image {
+        flex: 0 0 300px;
+        margin-right: 40px;
+    }
+
+    .book-image img {
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .book-info {
+        flex: 1;
+    }
+
+    .book-info h1 {
+        margin: 0 0 20px;
+        color: #333;
+    }
+
+    .author {
+        color: #666;
+        margin-bottom: 15px;
+    }
+
+    .price {
+        font-size: 24px;
+        color: #2c3e50;
+        margin-bottom: 20px;
+    }
+
+    .discount {
+      
+        color: rgb(29, 27, 27);
+        padding: 4px 8px;
+        border-radius: 4px;
+        margin-left: 10px;
+        font-size: 14px;
+    }
+
+    .description {
+        margin: 20px 0;
+        line-height: 1.6;
+    }
+
+    .stock {
+        color: #27ae60;
+        margin-bottom: 20px;
+    }
+
+    .button {
+        display: inline-block;
+        width: 90%;
+        padding: 15px 15px;
+        background-color: #28a745;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        font-weight: bold;
+        text-align: center;
+        transition: background-color 0.3s;
+        margin-bottom: 15px;
+    }
+
+    .button:hover {
+        background-color: #218838; 
+    }
+
+    .out-of-stock {
+        color: #e74c3c;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}

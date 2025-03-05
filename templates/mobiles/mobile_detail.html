@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ mobile.title }}{% endblock %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/mobile_detail.css' %}">
+
+<nav class="navbar">
+    <ul>
+        <li><a href="{% url 'book:book_list' %}">Books</a></li>
+        <li><a href="{% url 'shoes:shoes_list' %}">Shoes</a></li>
+        <li><a href="{% url 'clothes:clothes_list' %}">Clothes</a></li>
+        <li><a href="{% url 'mobiles:mobiles_list' %}">Mobiles</a></li>
+        <li><a href="{% url 'cart:view_cart' %}">Cart</a></li>
+        <li><a href="{% url 'customer:profile' %}">Profile</a></li>
+        <li><a href="{% url 'customer:logout' %}">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="mobile-detail">
+    <div class="mobile-image">
+        {% if mobile.image %}
+            <img src="{{ mobile.image.url }}" alt="{{ mobile.title }}">
+        {% endif %}
+    </div>
+    <div class="mobile-info">
+        <h1>{{ mobile.title }}</h1>
+        <p class="brand">Brand: {{ mobile.brand }}</p>
+        <p class="price">${{ mobile.price }}</p>
+
+        <div class="specifications">
+            <h3>Specifications</h3>
+            <ul class="specs-list">
+                <li><strong>Storage:</strong> {{ mobile.storage }}</li>
+                <li><strong>RAM:</strong> {{ mobile.ram }}</li>
+                <li><strong>Screen Size:</strong> {{ mobile.screen_size }}</li>
+                <li><strong>Camera:</strong> {{ mobile.camera }}</li>
+            </ul>
+        </div>
+
+        <div class="actions">
+            {% if user.is_authenticated %}
+                <a href="{% url 'cart:add_to_cart' 'mobile' mobile.id %}" class="button">Add to Cart</a>
+            {% else %}
+                <a href="{% url 'customer:login' %}" class="button">Login to Purchase</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .navbar {
+        background-color: #333;
+        padding: 10px 20px;
+    }
+    .navbar ul {
+        list-style-type: none;
+        display: flex;
+        justify-content: space-between;
+        margin: 0;
+        padding: 0;
+    }
+    .navbar li {
+        margin: 0 10px;
+    }
+    .navbar a {
+        color: #fff;
+        text-decoration: none;
+        padding: 8px 12px;
+        transition: background-color 0.3s;
+    }
+    .navbar a:hover {
+        background-color: #555;
+        border-radius: 5px;
+    }
+    .mobile-detail {
+        display: flex;
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .mobile-image {
+        flex: 0 0 300px;
+        margin-right: 40px;
+    }
+    .mobile-image img {
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .mobile-info {
+        flex: 1;
+    }
+    .mobile-info h1 {
+        margin: 0 0 20px;
+        color: #333;
+    }
+    .brand {
+        color: #666;
+        margin-bottom: 15px;
+        font-size: 18px;
+    }
+    .price {
+        font-size: 24px;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+    .specifications {
+        margin-bottom: 20px;  /* Thêm khoảng cách bên dưới specifications */
+    }
+    .specifications h3 {
+        margin: 20px 0 10px;
+        color: #333;
+    }
+    .specs-list {
+        list-style: none;
+        padding: 0;
+    }
+    .specs-list li {
+        margin-bottom: 5px;
+    }
+    .actions {
+        text-align: center;
+    }
+    .button {
+        display: inline-block;
+        width: 90%;
+        padding: 15px 15px;
+        background-color: #28a745;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        font-weight: bold;
+        text-align: center;
+        transition: background-color 0.3s;
+        margin-bottom: 15px;
+    }
+    .button:hover {
+        background-color: #218838;
+    }
+</style>
+{% endblock %}

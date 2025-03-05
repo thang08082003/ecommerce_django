@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}Clothes List{% endblock %}
+
+{% block content %}
+<style>
+    .clothes-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .search-bar {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .search-bar input {
+    padding: 10px;
+    width: 80%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+    box-sizing: border-box;
+}
+
+
+    .search-bar button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .clothes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .clothes-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s;
+        background: white;
+    }
+
+    .clothes-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .clothes-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .clothes-info {
+        padding: 15px;
+    }
+
+    .clothes-title {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .clothes-brand {
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .clothes-price {
+        font-weight: bold;
+        color: #4CAF50;
+        margin-bottom: 15px;
+    }
+
+    .view-details {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+
+    .view-details:hover {
+        background-color: #45a049;
+    }
+    
+    .navbar {
+            background-color: #333;
+            padding: 10px 20px;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            display: flex;
+            justify-content: space-between;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar li {
+            margin: 0 10px;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 12px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #555;
+            border-radius: 5px;
+        }
+</style>
+<nav class="navbar">
+    <ul>
+        <li><a href="{% url 'book:book_list' %}">Books</a></li>
+        <li><a href="{% url 'shoes:shoes_list' %}">Shoes</a></li>
+        <li><a href="{% url 'clothes:clothes_list' %}">Clothes</a></li>
+        <li><a href="{% url 'mobiles:mobiles_list' %}">Mobiles</a></li>
+        <li><a href="{% url 'cart:view_cart' %}">Cart</a></li>
+        <li><a href="{% url 'customer:profile' %}">Profile</a></li>
+        <li><a href="{% url 'customer:logout' %}">Logout</a></li>
+    </ul>
+</nav>
+<div class="clothes-container">
+    <div class="search-bar">
+        <form method="GET" action="{% url 'clothes:clothes_list' %}">
+            <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search clothes...">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="clothes-grid">
+        {% for item in clothes %}
+            <div class="clothes-card">
+                {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.title }}" class="clothes-image">
+                {% endif %}
+                <div class="clothes-info">
+                    <h2 class="clothes-title">{{ item.title }}</h2>
+                    <p class="clothes-brand">{{ item.brand }}</p>
+                    <p class="clothes-price">${{ item.price }}</p>
+                    <a href="{% url 'clothes:clothes_detail' item.id %}" class="view-details">View Details</a>
+                </div>
+            </div>
+        {% empty %}
+            <p>No clothes found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="form-box">
+        <h2>Login</h2>
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            
+        
+            {% if error %}
+                <div class="alert alert-danger">
+                    <p>{{ error }}</p>
+                </div>
+            {% endif %}
+            
+          
+            <div class="form-group">
+                <label for="id_username">Username:</label>
+                <input type="text" name="username" id="id_username" class="form-control" value="{{ form.username.value }}">
+                {% if form.username.errors %}
+                    <div class="error-message">
+                        {% for error in form.username.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+          
+            <div class="form-group">
+                <label for="id_password">Password:</label>
+                <input type="password" name="password" id="id_password" class="form-control" value="{{ form.password.value }}">
+                {% if form.password.errors %}
+                    <div class="error-message">
+                        {% for error in form.password.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+          
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+            
+         
+            <div class="form-links">
+                <p>Don't have an account? <a href="{% url 'customer:register' %}">Register here</a></p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

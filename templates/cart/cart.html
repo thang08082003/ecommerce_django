@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+
+{% block title %}Shopping Cart{% endblock %}
+
+{% block content %}
+<style>
+    .navbar {
+        background-color: #333;
+        padding: 10px 20px;
+    }
+    .navbar ul {
+        list-style-type: none;
+        display: flex;
+        justify-content: space-between;
+        margin: 0;
+        padding: 0;
+    }
+    .navbar li {
+        margin: 0 10px;
+    }
+    .navbar a {
+        color: #fff;
+        text-decoration: none;
+        padding: 8px 12px;
+        transition: background-color 0.3s;
+    }
+    .navbar a:hover {
+        background-color: #555;
+        border-radius: 5px;
+    }
+
+    .cart-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+    .cart-header {
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #eee;
+        position: center;
+    }
+    .cart-item {
+        display: flex;
+        align-items: center;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+    /* 3 cột: image, info, actions */
+    .item-image {
+        flex: 0 0 120px;
+        margin-right: 20px;
+    }
+    .item-image img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .item-info {
+        flex: 1;
+    }
+    .item-info h2 {
+        font-size: 18px;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    .item-info p {
+        margin: 5px 0;
+        color: #666;
+        font-size: 0.95em;
+    }
+    .item-actions {
+        flex: 0 0 150px;
+        text-align: right;
+    }
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin-bottom: 10px;
+    }
+    .quantity-btn {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .quantity-btn:hover {
+        background-color: #45a049;
+    }
+    .quantity {
+        margin: 0 15px;
+        font-weight: bold;
+    }
+    .subtotal {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    .remove-btn {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #dc3545;
+        color: white;
+        text-decoration: none;
+        border-radius: 3px;
+        font-size: 0.9em;
+        transition: background-color 0.3s;
+    }
+    .remove-btn:hover {
+        background-color: #c82333;
+    }
+    .cart-summary {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 5px;
+        margin-top: 20px;
+        text-align: right;
+    }
+    .total {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+    .checkout-btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+    .checkout-btn:hover {
+        background-color: #45a049;
+    }
+    .empty-cart {
+        text-align: center;
+        padding: 40px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+    }
+    .continue-shopping {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 15px;
+        transition: background-color 0.3s;
+    }
+</style>
+
+<nav class="navbar">
+    <ul>
+        <li><a href="{% url 'book:book_list' %}">Books</a></li>
+        <li><a href="{% url 'shoes:shoes_list' %}">Shoes</a></li>
+        <li><a href="{% url 'clothes:clothes_list' %}">Clothes</a></li>
+        <li><a href="{% url 'mobiles:mobiles_list' %}">Mobiles</a></li>
+        <li><a href="{% url 'cart:view_cart' %}">Cart</a></li>
+        <li><a href="{% url 'customer:profile' %}">Profile</a></li>
+        <li><a href="{% url 'customer:logout' %}">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="cart-container">
+    <div class="cart-header">
+        <h1>Your Shopping Cart</h1>
+    </div>
+
+    {% if cart and cart.items.exists %}
+        {% for item in cart.items.all %}
+            <div class="cart-item">
+                {% if item.book %}
+                    <div class="item-image">
+                        {% if item.book.cover_image %}
+                            <img src="{{ item.book.cover_image.url }}" alt="{{ item.book.title }}">
+                        {% endif %}
+                    </div>
+                    <div class="item-info">
+                        <h2 class="item-title">{{ item.book.title }}</h2>
+                        <p class="item-price">Price: ${{ item.book.price }}</p>
+                        <p class="item-type">Type: Book</p>
+                    </div>
+                {% elif item.shoes %}
+                    <div class="item-image">
+                        {% if item.shoes.image %}
+                            <img src="{{ item.shoes.image.url }}" alt="{{ item.shoes.title }}">
+                        {% endif %}
+                    </div>
+                    <div class="item-info">
+                        <h2 class="item-title">{{ item.shoes.title }}</h2>
+                        <p class="item-price">Price: ${{ item.shoes.price }}</p>
+                        <p class="item-type">Type: Shoes | Size: {{ item.shoes.size }}</p>
+                    </div>
+                {% elif item.clothes %}
+                    <div class="item-image">
+                        {% if item.clothes.image %}
+                            <img src="{{ item.clothes.image.url }}" alt="{{ item.clothes.title }}">
+                        {% endif %}
+                    </div>
+                    <div class="item-info">
+                        <h2 class="item-title">{{ item.clothes.title }}</h2>
+                        <p class="item-price">Price: ${{ item.clothes.price }}</p>
+                        <p class="item-type">Type: Clothes | Size: {{ item.clothes.size }} | Color: {{ item.clothes.color }}</p>
+                    </div>
+                {% elif item.mobile %}
+                    <div class="item-image">
+                        {% if item.mobile.image %}
+                            <img src="{{ item.mobile.image.url }}" alt="{{ item.mobile.title }}">
+                        {% endif %}
+                    </div>
+                    <div class="item-info">
+                        <h2 class="item-title">{{ item.mobile.title }}</h2>
+                        <p class="item-price">Price: ${{ item.mobile.price }}</p>
+                        <p class="item-type">Type: Mobile | Storage: {{ item.mobile.storage }} | RAM: {{ item.mobile.ram }}</p>
+                        <p class="item-type">Screen: {{ item.mobile.screen_size }} | Camera: {{ item.mobile.camera }}</p>
+                    </div>
+                {% endif %}
+
+                <div class="item-actions">
+                    <div class="quantity-controls">
+                        <form method="post" action="{% url 'cart:update_quantity' item.id %}">
+                            {% csrf_token %}
+                            <button type="submit" name="action" value="decrease" class="quantity-btn">-</button>
+                            <span class="quantity">{{ item.quantity }}</span>
+                            <button type="submit" name="action" value="increase" class="quantity-btn">+</button>
+                        </form>
+                    </div>
+                    <p class="subtotal">Subtotal: ${{ item.get_cost }}</p>
+                    <a href="{% url 'cart:remove_from_cart' item.id %}" class="remove-btn">Remove</a>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="cart-summary">
+            <p class="total">Total: ${{ cart.get_total }}</p>
+            <a href="{% url 'cart:checkout' %}" class="checkout-btn">Proceed to Checkout</a>
+        </div>
+    {% else %}
+        <div class="empty-cart">
+            <p>Your cart is empty</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
