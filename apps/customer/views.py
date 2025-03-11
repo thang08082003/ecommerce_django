@@ -6,6 +6,8 @@ from apps.order.models import Order
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 
 from .models import Customer
 from .serializers import CustomerSerializer
@@ -46,7 +48,7 @@ def register(request):
 
 @login_required
 def profile(request):
-    # Get all orders for the current user, ordered by most recent first
+ 
     orders = Order.objects.filter(
         customer=request.user.customer
     ).order_by('-order_date')
@@ -58,3 +60,7 @@ def profile(request):
 
 def profile_view(request):
     return render(request, 'customer/profile.html')
+    
+def logout_view(request):
+    logout(request)
+    return redirect('login')  # Changed to use the standard login URL

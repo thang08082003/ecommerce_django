@@ -23,7 +23,7 @@
             <div class="form-group">
                 <label for="id_username">Username:</label>
                 {{ form.username }}
-                
+                {% if form.username.help_text %}
                     <small class="help-text">{{ form.username.help_text }}</small>
                 {% endif %}
             </div>
